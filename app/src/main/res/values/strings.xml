@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">OutdoorCompanion</string>
+    <string name="titlelabel">Outdoor Companion App</string>
+    <string name="Timertitle">Enter length of time</string>
+    <string name="Hours">Hours</string>
+    <string name="Minutes">Minutes</string>
+    <string name="Seconds">Seconds</string>
+
+</resources>
