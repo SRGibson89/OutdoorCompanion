@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Background"
     tools:context=".Timmer">
 
     <EditText
@@ -16,6 +17,7 @@
         android:hint="00"
         android:inputType="number"
         android:textAlignment="center"
+        android:textColor="@color/Text"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,12 +26,13 @@
         android:id="@+id/txtMins"
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="196dp"
         android:ems="10"
         android:hint="00"
         android:inputType="number"
         android:textAlignment="center"
+        android:textColor="@color/Text"
         android:textSize="30sp"
         app:layout_constraintStart_toEndOf="@+id/txthours"
         app:layout_constraintTop_toTopOf="parent" />
@@ -44,6 +47,7 @@
         android:hint="00"
         android:inputType="number"
         android:textAlignment="center"
+        android:textColor="@color/Text"
         android:textSize="30sp"
         app:layout_constraintStart_toEndOf="@+id/txtMins"
         app:layout_constraintTop_toTopOf="parent" />
@@ -56,6 +60,7 @@
         android:layout_marginTop="68dp"
         android:layout_marginEnd="143dp"
         android:text="@string/Timertitle"
+        android:textColor="@color/Text"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,6 +74,7 @@
         android:layout_marginTop="57dp"
         android:text="@string/Hours"
         android:textAlignment="center"
+        android:textColor="@color/Text"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
@@ -80,6 +86,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="56dp"
         android:text="@string/Minutes"
+        android:textColor="@color/Text"
         app:layout_constraintStart_toEndOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -91,7 +98,8 @@
         android:layout_marginTop="55dp"
         android:text="@string/Seconds"
         app:layout_constraintStart_toEndOf="@+id/textView3"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        android:textColor="@color/Text" />
 
     <Button
         android:id="@+id/BtnStart"
@@ -105,28 +113,40 @@
         android:text="Start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lblCLocat2" />
+        app:layout_constraintTop_toBottomOf="@+id/lblCLocat2"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/lblremaining"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="74dp"
-        android:layout_marginTop="61dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="8dp"
+        android:text="Timer Not Started"
         android:textAlignment="textStart"
+        android:textColor="@color/Text"
         android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.133"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txthours" />
+        app:layout_constraintTop_toBottomOf="@+id/txtMins" />
 
     <TextView
         android:id="@+id/lblCLocat2"
         android:layout_width="228dp"
         android:layout_height="120dp"
         android:layout_marginStart="74dp"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="8dp"
         android:text="Current Location"
-        android:textSize="30sp"
+        android:textColor="@color/Text"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.168"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lblremaining" />
+
 </android.support.constraint.ConstraintLayout>
