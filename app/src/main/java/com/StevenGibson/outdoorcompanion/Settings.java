@@ -3,10 +3,17 @@ package com.StevenGibson.outdoorcompanion;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.BatteryManager;
 import android.os.Build;
+import android.os.CountDownTimer;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,6 +25,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Settings extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
@@ -28,6 +39,9 @@ public class Settings extends AppCompatActivity {
 
     private final int REQUEST_CODE=99;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+
+    Button btnEval;
+
     @Override
     /*protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +49,7 @@ public class Settings extends AppCompatActivity {
     }*/
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        requestAppPermissions();
         RequestContacts();
         setContentView(R.layout.activity_settings);
 
@@ -69,6 +83,9 @@ public class Settings extends AppCompatActivity {
         });
 
         loadData();
+
+        //testing
+        btnEval = (findViewById(R.id.btnEval));
     }
 
     public void loadData(){
@@ -78,8 +95,19 @@ public class Settings extends AppCompatActivity {
         ICE2 = sharedPreferences.getString("ICE2","");
         ICE2Number = sharedPreferences.getString("ICE2Number","");
 
-        btContact1.setText(ICE1);
-        btContact2.setText(ICE2);
+        if (ICE1.equals("")){
+            btContact1.setText("Select Contact");
+        }
+        else{
+            btContact1.setText(ICE1);
+        }
+        if (ICE1.equals("")){
+            btContact1.setText("Select Contact");
+        }
+        else {
+            btContact2.setText(ICE2);
+        }
+
         Log.i("Info","ICE1 is :" + ICE1 + " "+ ICE1Number);
         Log.i("Info","ICE2 is :" + ICE2 + " "+ ICE2Number);
 
@@ -162,4 +190,125 @@ public class Settings extends AppCompatActivity {
             }
         }
     }
+
+
+
+    // the following is used methods are only here to gather test data
+
+    private static final int REQUEST_WRITE_STORAGE = 112;
+    Context context = this;
+
+
+    public void batteryLeft(View view){
+        String Data = "This a is a test \n";
+        String File = "/Battery.txt";
+        int Battery = getBatteryPercentage(this);
+        Data = "\n --Testing started "+"Battery percentage is " + String.valueOf(Battery) + "--\n";
+        writeToFile(Data,File);
+        startTimer();
+    }
+
+    private void startTimer() {
+
+        //mEndTime = (int) (System.currentTimeMillis() + secondsLeft);
+        btnEval.setAlpha(.5f);
+        btnEval.setClickable(false);
+        CountDownTimer CDT = new CountDownTimer(3600000,600000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                Log.i("info","X");
+                int Battery = getBatteryPercentage(context);
+
+                String Data = "Battery percentage is " + String.valueOf(Battery) + "\n";
+                Log.i("info",Data);
+                writeToFile(Data,"/Battery.txt");
+            }
+
+            @Override
+            public void onFinish() {
+                MediaPlayer mplayer = MediaPlayer.create(getApplicationContext(), R.raw.airhorn);
+                mplayer.start();
+                Log.i("Info", "Timer done");
+                btnEval.setAlpha(1);
+                btnEval.setClickable(true);
+                int Battery = getBatteryPercentage(context);
+                String Data = "\n --Testing ended "+"Battery percentage is " + String.valueOf(Battery) + "--\n";
+                writeToFile(Data,"/Battery.txt");
+
+            }
+        }.start();
+
+    }
+
+
+    public static int getBatteryPercentage(Context context) {
+
+        IntentFilter iFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = context.registerReceiver(null, iFilter);
+
+        int level = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) : -1;
+        int scale = batteryStatus != null ? batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1) : -1;
+
+        float batteryPct = level / (float) scale;
+
+        return (int) (batteryPct * 100);
+    }
+
+    public void writeToFile(String Data,String Filename) {
+
+        try {
+            //makes a directory for Android 8.0 and below
+            File root = new File(Environment.getExternalStorageDirectory(), "Outdoor_Companion");
+            File root2 = new File(context.getFilesDir(), "Outdoor_Companion");
+            if (!root.exists()) {
+                root.mkdirs();
+            }
+
+            //makes a directory for Android 9.0 and above
+            if (!root2.exists()) {
+                root2.mkdirs();
+            }
+
+            File gpxfile = new File(root, Filename);
+            FileWriter writer = new FileWriter(gpxfile, true);
+            writer.append(Data);
+            writer.flush();
+            writer.close();
+
+            File gpxfile2 = new File(root2, Filename);
+            FileWriter writer2 = new FileWriter(gpxfile2, true);
+            writer2.append(Data);
+            writer2.flush();
+            writer2.close();
+            Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+    }
+
+    private void requestAppPermissions() {
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            return;
+        }
+
+        if (hasReadPermissions() && hasWritePermissions()) {
+            return;
+        }
+
+        ActivityCompat.requestPermissions(this,
+                new String[] {
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                }, REQUEST_WRITE_STORAGE); // your request code
+    }
+
+    private boolean hasReadPermissions() {
+        return (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private boolean hasWritePermissions() {
+        return (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+    }
+
 }
